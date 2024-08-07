@@ -1,13 +1,12 @@
 #include "yolov8_pose_mnn.hpp"
 
-
-void image_demo(int argc, char** argv)
+void image_demo(int argc, char **argv)
 {
     const std::string imgPath = argv[3];
     const int size = atoi(argv[4]);
-    bool show = argc == 6? atoi(argv[5]): 0;
+    bool show = argc == 6 ? atoi(argv[5]) : 0;
 
-    MNNKeypointsConfigs configs;
+    MNNPoseConfigs configs;
     configs.mnnPath = argv[2];
     configs.inputSize = cv::Size(size, size);
     configs.threads = 2;
@@ -17,20 +16,22 @@ void image_demo(int argc, char** argv)
     configs.means = {0.0f, 0.0f, 0.0f};
     configs.norms = {1.0f, 1.0f, 1.0f};
 
-    Yolov8KeypointsMNN yolo(configs);
+    Yolov8PoseMNN yolo(configs);
 
     cv::Mat image = cv::imread(imgPath);
     std::vector<Object> objects;
+
     auto start = std::chrono::steady_clock::now();
     yolo.detect(image, objects);
     auto end = std::chrono::steady_clock::now();
+
     std::chrono::duration<double> elapsed = end - start;
-    float timeMs = elapsed.count()*1000;
-    std::cout << "detect " << (int)objects.size() << " objects in " <<  timeMs << " ms\n";
-    for (const auto& obj: objects)
+    float timeMs = elapsed.count() * 1000;
+    std::cout << "detect " << (int)objects.size() << " objects in " << timeMs << " ms\n";
+    for (const auto &obj : objects)
     {
         std::cout << obj.prob << "\t";
-        std::cout << "(" << obj.rect.tl() << ", " << obj.rect.br() << ")" << std::endl; 
+        std::cout << "(" << obj.rect.tl() << ", " << obj.rect.br() << ")" << std::endl;
     }
     if (show)
     {
@@ -40,17 +41,16 @@ void image_demo(int argc, char** argv)
     }
 }
 
-
-void stream_demo(int argc, char** argv)
+void stream_demo(int argc, char **argv)
 {
     const int camId = atoi(argv[3]);
     const int size = atoi(argv[4]);
-    bool show = argc == 6? atoi(argv[5]): 0;
+    bool show = argc == 6 ? atoi(argv[5]) : 0;
 
     std::vector<std::string> labels;
     std::string dataset = argv[3];
 
-    MNNKeypointsConfigs configs;
+    MNNPoseConfigs configs;
     configs.mnnPath = argv[2];
     configs.inputSize = cv::Size(size, size);
     configs.threads = 2;
@@ -60,7 +60,7 @@ void stream_demo(int argc, char** argv)
     configs.means = {0.0f, 0.0f, 0.0f};
     configs.norms = {1.0f, 1.0f, 1.0f};
 
-    Yolov8KeypointsMNN yolo(configs);
+    Yolov8PoseMNN yolo(configs);
 
     cv::Mat image;
     cv::VideoCapture cap(camId);
@@ -77,8 +77,8 @@ void stream_demo(int argc, char** argv)
         yolo.detect(image, objects);
         auto end = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = end - start;
-        float timeMs = elapsed.count()*1000;
-        std::cout << "detect " << (int)objects.size() << " objects in " <<  timeMs << " ms\n";
+        float timeMs = elapsed.count() * 1000;
+        std::cout << "detect " << (int)objects.size() << " objects in " << timeMs << " ms\n";
 
         if (show)
         {
@@ -92,15 +92,14 @@ void stream_demo(int argc, char** argv)
     }
 }
 
-
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
     if (argc != 5 && argc != 6)
     {
         fprintf(stderr, "usage: %s [demo] [model_path] [input] [input_size] [show] ..\n", argv[0]);
         return -1;
     }
-    
+
     std::string demo = argv[1];
     if (demo == "image")
     {
@@ -112,7 +111,7 @@ int main(int argc, char** argv)
     }
     else
     {
-        std::cout << "unrecognized demo type: "  << argv[1] << std::endl;
+        std::cout << "unrecognized demo type: " << argv[1] << std::endl;
         exit(EXIT_FAILURE);
     }
     return 0;
