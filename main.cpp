@@ -3,6 +3,11 @@
 void image_demo(int argc, char **argv)
 {
     const std::string imgPath = argv[3];
+
+    // std::cout << imgPath << std::endl;
+
+    // return;
+
     const int size = atoi(argv[4]);
     bool show = argc == 6 ? atoi(argv[5]) : 0;
 

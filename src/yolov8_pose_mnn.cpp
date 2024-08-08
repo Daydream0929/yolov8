@@ -127,15 +127,8 @@ cv::Mat Yolov8PoseMNN::preProcess(cv::Mat &src)
     int unpadW = r * src.cols;
     int unpadH = r * src.rows;
 
-    return cv::Mat();
-
     cv::Mat re(unpadH, unpadW, CV_8UC3);
-
-    
-
     cv::resize(src, re, re.size());
-
-    
 
     // 2. padding the bottom-right with pad value
     cv::Mat dst(inputH, inputW, CV_8UC3, cv::Scalar(114, 114, 114));
@@ -228,12 +221,7 @@ void Yolov8PoseMNN::detect(cv::Mat &img, std::vector<Object> &objects)
     const int &inputW = mnnCfg_.inputSize.width;
     const int &inputH = mnnCfg_.inputSize.height;
 
-
-    
-
     cv::Mat prImg = preProcess(img);
-
-    return;
 
     interpreter_->resizeTensor(inputTensor_, {1, 3, inputH, inputW});
     interpreter_->resizeSession(session_);
