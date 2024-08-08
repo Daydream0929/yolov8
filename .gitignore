@@ -34,7 +34,7 @@
 # Build
 /build
 
-# videos
-*.mp4
-*.mov
-*.pt
+# # videos
+# *.mp4
+# *.mov
+# *.pt
